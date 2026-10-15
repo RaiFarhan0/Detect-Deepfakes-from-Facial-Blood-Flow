@@ -4,14 +4,16 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg?style=for-the-badge)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-38bdf8.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![GitHub Stars](https://img.shields.io/github/stars/RaiFarhan0/Detect-Deepfakes-from-Facial-Blood-Flow?style=for-the-badge&logo=github&color=eab308)](https://github.com/RaiFarhan0/Detect-Deepfakes-from-Facial-Blood-Flow/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/RaiFarhan0/Detect-Deepfakes-from-Facial-Blood-Flow?style=for-the-badge&logo=github&color=6366f1)](https://github.com/RaiFarhan0/Detect-Deepfakes-from-Facial-Blood-Flow/network/members)
+[![CI Test Suite](https://github.com/RaiFarhan0/Detect-Deepfakes-from-Facial-Blood-Flow/actions/workflows/ci.yml/badge.svg)](https://github.com/RaiFarhan0/Detect-Deepfakes-from-Facial-Blood-Flow/actions)
 [![MediaPipe Tasks](https://img.shields.io/badge/MediaPipe-478_Landmarks-06b6d4.svg?style=for-the-badge&logo=google&logoColor=white)](https://developers.google.com/mediapipe)
 [![OpenCV](https://img.shields.io/badge/OpenCV-Vascular_Tracking-ea580c.svg?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org/)
 [![SciPy Signal](https://img.shields.io/badge/SciPy-Spectral_Coherence-3b82f6.svg?style=for-the-badge&logo=scipy&logoColor=white)](https://scipy.org/)
-[![Tests Passing](https://img.shields.io/badge/Tests-Passing_100%25-22c55e.svg?style=for-the-badge&logo=githubactions&logoColor=white)]()
 
 <br>
 
-**A production-grade, non-contact biometric forensic engine that detects AI deepfakes and face swaps by measuring sub-visual capillary blood volume pulses (BVP) and spatial cross-spectral hemodynamic coherence.**
+**A production-grade, non-contact biometric forensic engine that detects AI deepfakes and synthetic face swaps by measuring sub-visual capillary blood volume pulses (BVP) and spatial cross-spectral hemodynamic coherence.**
 
 [Overview](#-overview) • [How It Works](#-the-science--mathematics) • [System Architecture](#-system-architecture) • [Web Dashboard](#-interactive-web-dashboard) • [Quickstart](#-quickstart) • [CLI & API](#-cli-reference--python-api) • [Training](#-model-training--cross-validation) • [Citations](#-academic-references)
 
@@ -21,9 +23,9 @@
 
 ## 📌 Overview
 
-Generative artificial intelligence models (such as autoencoders, GANs, and diffusion networks like Sora, Runway, and DeepFaceLab) can synthesize hyper-realistic facial imagery with remarkable structural and perceptual quality. However, **they do not model human cardiovascular physiology**.
+Generative artificial intelligence models (such as autoencoders, GANs, and modern diffusion models like Sora, Runway Gen-3, and DeepFaceLab) can synthesize hyper-realistic facial imagery with remarkable structural and perceptual fidelity. However, **they do not model human cardiovascular physiology**.
 
-When an authentic human heart contracts during systole, a pulse wave travels through the vascular tree into facial capillary networks. This periodic flood of oxygenated hemoglobin alters the light absorption properties of the skin, producing subtle, cyclic color shifts ($\Delta I / I \approx 1\text{--}2\%$) imperceptible to the naked eye. By applying **Remote Photoplethysmography (rPPG)**, cameras can detect this biological signal without physical contact.
+When an authentic human heart contracts during systole, a pulse wave travels through the vascular tree into facial capillary networks. This periodic flood of oxygenated hemoglobin alters the light absorption properties of the skin, producing subtle, cyclic color shifts ($\Delta I / I \approx 1\text{--}2\%$) imperceptible to the naked eye. By applying **Remote Photoplethysmography (rPPG)**, ordinary video cameras can detect this biological pulse without physical contact.
 
 **Detect Deepfakes from Facial Blood Flow** implements the biological principles pioneered in **FakeCatcher** (*Ciftci, Demir & Yin, Binghamton University & Intel Labs, 2020*) and state-of-the-art optical pulse extraction algorithms (**POS** by *Wang et al., 2017* and **CHROM** by *de Haan & Jeanne, 2013*). Rather than relying on fragile pixel artifacts that change with compression, it checks whether different regions of a face pulse with **synchronous, biologically authentic hemodynamics**.
 
@@ -38,7 +40,7 @@ When an authentic human heart contracts during systole, a pulse wave travels thr
 
 ## 🌟 Key Capabilities
 
-- **🔬 Microvascular Hemodynamic Extraction:** Tracks sub-visual blood volume changes across multiple facial skin patches (Forehead, Left Cheek, Right Cheek) using high-precision ROI geometry.
+- **🔬 Microvascular Hemodynamic Extraction:** Tracks sub-visual blood volume changes across multiple facial skin patches (Forehead, Left Cheek, Right Cheek) using high-precision MediaPipe FaceMesh geometry (478 landmarks).
 - **🛡️ Spatial Patch Coherence Analysis:** Measures pairwise **Magnitude-Squared Coherence (MSC)**, cross-correlation, and phase lag between facial regions. Authentic faces exhibit tightly coupled blood flow; synthetic faces generate localized phase divergence and latent flicker.
 - **⚡ Advanced rPPG Implementations:**
   - **POS (Plane-Orthogonal-to-Skin):** State-of-the-art projection method that eliminates specular reflection and intensity variations.
@@ -102,12 +104,13 @@ Where:
 - $P_{xx}(f)$ and $P_{yy}(f)$ are the individual auto-spectral power densities.
 - $C_{xy}(f) \in [0, 1]$.
 
-| Signal Metric | Authentic Human Face | Generative AI Deepfake |
+| Signal Metric | Authentic Human Face (`real.mp4`) | Generative AI Deepfake (`fake.mp4`) |
 | :--- | :---: | :---: |
-| **Mean Coherence ($C_{xy}$)** | **$0.55\text{ -- }0.98$** (Strongly Synchronized) | **$< 0.35$** (Desynchronized / Noise) |
-| **Cross-Correlation ($R_{xy}$)** | **$\ge 0.55$** (Correlated Waveforms) | **$< 0.30$** (Uncorrelated) |
-| **Peak Phase Lag ($\tau$)** | **$< 1.5$ frames** ($\approx 0\text{ ms}$) | **$\ge 3\text{ -- }10$ frames** (Erratic) |
-| **Inter-Patch BPM Dispersion** | **$< 2.5\text{ BPM}$** | **$> 8.0\text{ BPM}$** |
+| **Forensic Verdict** | **REAL (Human)** | **DEEPFAKE (Synthetic)** |
+| **Mean Coherence ($C_{xy}$)** | **$0.613$** (Synchronized) | **$0.174$** (Desynchronized / Noise) |
+| **Cross-Correlation ($R_{xy}$)** | **$0.758$** (Correlated Waveforms) | **$0.380$** (Uncorrelated) |
+| **Peak Phase Lag ($\tau$)** | **$< 1.5$ frames** ($\approx 0\text{ ms}$) | **$\ge 5\text{ -- }10$ frames** (Erratic) |
+| **Dominant Peak Rate** | **$52.6\text{ BPM}$** (Physiological) | **Erratic Frequency Peaks** |
 
 ---
 
@@ -149,17 +152,18 @@ flowchart TD
 
 ## 🌐 Interactive Web Dashboard
 
-The integrated web interface provides a modern, responsive, and tactile forensic analysis suite:
+The integrated web interface provides a modern, responsive forensic analysis suite:
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/harixganesh/detect-deepfakes-facial-blood-flow/main/demo_samples/dashboard_preview.png" alt="Dashboard Preview" width="850" onerror="this.style.display='none'">
+  <img src="demo_samples/dashboard_preview.png" alt="Diagnostic Dashboard Preview" width="900" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+  <p><em>Left: Authentic Human Face analysis (Synchronized BVP waves, Coherence = 0.613). Right: AI Deepfake analysis (Desynchronized BVP waves, Coherence = 0.174).</em></p>
 </div>
 
 ### Features:
 1. **Instant Auto-Scan Upload:** Drop any video or click browse — analysis triggers automatically with progress indicators.
-2. **1-Click Benchmark Clips:** Instantly run verified sample clips:
-   - *Authentic Human Face* (72.0 BPM natural pulse, synchronized capillaries).
-   - *AI Deepfake* (Desynchronized patches, frequency jitter, generative flicker).
+2. **1-Click Benchmark Clips:** Instantly run verified sample clips included with the repository:
+   - 🟢 **`Authentic Face Demo (real.mp4)`**: Natural microvascular pulse, synchronized across facial capillary beds.
+   - 🔴 **`AI Deepfake Demo (fake.mp4)`**: Desynchronized patches, frequency jitter, generative flicker.
 3. **Interactive Capillary Waveforms:** Zoom and inspect extracted BVP pulses across Forehead and Cheeks via Chart.js.
 4. **3x3 Coherence Heatmap:** Visual matrix confirming inter-patch correlation and phase alignment.
 5. **Comprehensive Metrics Card:** Heart Rate (BPM), Dominant Frequency (Hz), Mean Coherence, Cross-Correlation, Phase Lag, and Peak SNR.
@@ -176,8 +180,8 @@ The integrated web interface provides a modern, responsive, and tactile forensic
 ### 2. Clone & Install
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/detect-deepfakes-facial-blood-flow.git
-cd detect-deepfakes-facial-blood-flow
+git clone https://github.com/RaiFarhan0/Detect-Deepfakes-from-Facial-Blood-Flow.git
+cd Detect-Deepfakes-from-Facial-Blood-Flow
 
 # Create and activate a virtual environment
 python -m venv venv
@@ -194,6 +198,7 @@ pip install -r requirements.txt
 ### 3. Launch the Web Application
 ```bash
 python main.py web
+# or: python app.py
 ```
 Open **`http://127.0.0.1:5000`** in your browser.
 
@@ -213,13 +218,13 @@ python main.py analyze --video path/to/video.mp4 --method pos --plot diagnostic.
 - `--plot`: Path to save the 4-panel diagnostic Matplotlib figure.
 - `--output-video`: Path to write an annotated video file with real-time HUD and ROI bounding boxes.
 
-#### 2. Run Synthetic Demonstration
-Generates synthetic authentic and deepfake videos with calibrated pulse rates, runs detection on both, and outputs comparison metrics:
+#### 2. Run Benchmark Demo on Real vs Deepfake
+Runs the end-to-end evaluation comparing `demo_samples/real.mp4` and `demo_samples/fake.mp4`:
 ```bash
 python main.py demo
 ```
 
-#### 3. Heart Rate Estimation Benchmark
+#### 3. Heart Rate Estimation Accuracy Benchmark
 Evaluates pulse detection error across ground-truth heart rates (60, 72, 84, 96, 110 BPM):
 ```bash
 python main.py benchmark
@@ -246,7 +251,7 @@ detector = DeepfakePulseDetector()
 detector.load_model("rppg_model.joblib")
 
 # 2. Extract facial patches frame by frame
-cap = cv2.VideoCapture("input_video.mp4")
+cap = cv2.VideoCapture("demo_samples/real.mp4")
 fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
 traces = {"forehead": [], "left_cheek": [], "right_cheek": []}
 
@@ -316,7 +321,7 @@ Each 3-second temporal window is encoded into a rich feature vector:
 ## 📁 Repository Structure
 
 ```
-detect-deepfakes-facial-blood-flow/
+Detect-Deepfakes-from-Facial-Blood-Flow/
 ├── rppg/
 │   ├── __init__.py
 │   ├── face_roi.py               # MediaPipe 478 landmarks & Haar cascade fallback
@@ -335,7 +340,13 @@ detect-deepfakes-facial-blood-flow/
 │   ├── js/app.js                 # Drag & drop upload, auto-scan, Chart.js waveforms
 │   └── uploads/                  # Temporary analysis artifacts (.gitignore preserved)
 │
-├── demo_samples/                 # Pre-rendered benchmark clips (Authentic & Deepfake)
+├── demo_samples/                 # Benchmark clips & diagnostic assets
+│   ├── real.mp4                  # Authentic face video sample
+│   ├── fake.mp4                  # AI deepfake video sample
+│   ├── dashboard_preview.png     # Side-by-side diagnostic visualizer preview
+│   ├── real_diagnostic.png       # 4-panel diagnostic report for authentic face
+│   └── fake_diagnostic.png       # 4-panel diagnostic report for deepfake face
+│
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                # Automated GitHub Actions test workflow
@@ -365,14 +376,14 @@ Expected output:
 ```
 ....
 ----------------------------------------------------------------------
-Ran 4 tests in 0.25s
+Ran 4 tests in 0.22s
 
 OK
 [Test] Target BPM: 72.0 | Detected: 72.00 | Error: 0.00
 [Test] Real verdict: REAL (Confidence: 95.0%)
-[Test] Fake verdict: DEEPFAKE (Confidence: 80.3%)
-[Test] Synchronous Patches Coherence:   0.998
-[Test] Desynchronized Patches Coherence: 0.111
+[Test] Fake verdict: DEEPFAKE (Confidence: 74.8%)
+[Test] Synchronous Patches Coherence:   0.997
+[Test] Desynchronized Patches Coherence: 0.126
 ```
 
 ---
@@ -433,7 +444,7 @@ If you utilize this project in your research or applications, please cite the fo
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the Project
+1. Fork the Project (`https://github.com/RaiFarhan0/Detect-Deepfakes-from-Facial-Blood-Flow/fork`)
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
@@ -448,5 +459,5 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more informa
 ---
 
 <div align="center">
-  <sub>Built with scientific precision for AI safety and digital media forensics.</sub>
+  <sub>Maintained by <a href="https://github.com/RaiFarhan0">Rai Farhan</a> • Built with scientific precision for AI safety and digital media forensics.</sub>
 </div>
