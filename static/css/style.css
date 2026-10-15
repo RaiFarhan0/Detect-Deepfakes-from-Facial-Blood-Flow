@@ -1,0 +1,61 @@
+/* PulseGuard AI — World-Class Clean Forensic UI Styles */
+
+body {
+    background-color: #05070e;
+    color: #f8fafc;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #05070e;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+
+/* Verdict Banners */
+.verdict-real {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.02) 100%);
+    border-color: rgba(16, 185, 129, 0.35);
+}
+.verdict-real #verdict-icon-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.08) 100%);
+    color: #34d399;
+    --tw-ring-color: rgba(16, 185, 129, 0.3);
+}
+.verdict-real #verdict-title {
+    color: #34d399;
+}
+.verdict-real #verdict-glow {
+    background-color: #10b981;
+}
+
+.verdict-fake {
+    background: linear-gradient(135deg, rgba(244, 63, 94, 0.09) 0%, rgba(225, 29, 72, 0.02) 100%);
+    border-color: rgba(244, 63, 94, 0.35);
+}
+.verdict-fake #verdict-icon-box {
+    background: linear-gradient(135deg, rgba(244, 63, 94, 0.2) 0%, rgba(225, 29, 72, 0.08) 100%);
+    color: #fb7185;
+    --tw-ring-color: rgba(244, 63, 94, 0.3);
+}
+.verdict-fake #verdict-title {
+    color: #fb7185;
+}
+.verdict-fake #verdict-glow {
+    background-color: #f43f5e;
+}
+
+/* Dropzone Active Border */
+.dropzone-active {
+    border-color: #10b981 !important;
+    background-color: rgba(16, 185, 129, 0.05) !important;
+}
